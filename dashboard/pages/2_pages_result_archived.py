@@ -22,6 +22,15 @@ def load_data():
         if page_scores_path.exists() and metadata_path.exists(): # Check both paths
             df = pd.read_csv(page_scores_path)
             metadata = pd.read_pickle(metadata_path)
+
+            # Ensure 'filename' column exists in df for merging
+            if 'filename' not in df.columns:
+                if 'pdf_id' in df.columns:
+                    df['filename'] = df['pdf_id'].apply(lambda x: 'extracted_' + str(x).replace('/', '_').replace(':', '_').replace('.', '_'))
+                else:
+                    st.error("'filename' column missing and cannot be derived (no 'pdf_id' column present).")
+                    return pd.DataFrame()
+            
             metadata['filename'] = metadata['id_gotriple'].apply(lambda x: 'extracted_'+ x.replace('/', '_').replace(':', '_').replace('.', '_'))
             df = df.merge(metadata, on=['filename', 'discipline'], how='left')
             # Clean up column names for better display
@@ -36,7 +45,7 @@ def load_data():
             st.error("\n".join(error_messages))
             return pd.DataFrame()
     except KeyError as e:
-        st.error(f"Path key not found in session state: {e}. Ensure paths are initialized in app.py.")
+        st.error(f"KeyError occurred: {str(e)}")
         return pd.DataFrame()
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")

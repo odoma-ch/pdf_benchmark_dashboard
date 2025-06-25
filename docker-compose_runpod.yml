@@ -1,0 +1,26 @@
+version: '3.11'
+
+services:
+  dashboard:
+    build:
+      context: .
+      args:
+        PDF_DIR: /workspace/data/pdfs
+        MARKDOWN_DIR: /workspace/data/extracted
+        PAGE_SCORES_CSV: /workspace/data/page_scores_full.csv
+        METADATA_PKL: /workspace/data/metadata_openalex\(silver\).pkl
+    ports:
+      - "8501:8501"
+    environment:
+      - PDF_DIR=/workspace/data/pdfs
+      - MARKDOWN_DIR=/workspace/data/extracted
+      - PAGE_SCORES_CSV=/workspace/data/page_scores_full.csv
+      - METADATA_PKL=/workspace/data/metadata_openalex\(silver\).pkl
+    volumes:
+      - ./data:/workspace/data
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8501/_stcore/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 

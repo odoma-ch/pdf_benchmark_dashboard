@@ -24,6 +24,13 @@ def load_data():
             # Prepare metadata filename
             metadata['filename'] = metadata['id_gotriple'].apply(lambda x: 'extracted_'+ x.replace('/', '_').replace(':', '_').replace('.', '_'))
             
+            if 'filename' not in page_df.columns:
+                if 'pdf_id' in page_df.columns:
+                    page_df['filename'] = page_df['pdf_id'].apply(lambda x: 'extracted_' + str(x).replace('/', '_').replace(':', '_').replace('.', '_'))
+                else:
+                    st.error("'filename' column missing and cannot be derived (no 'pdf_id' and 'filename' column present).")
+                    # return pd.DataFrame(), pd.DataFrame()
+            
             # Merge data using both filename and discipline as keys
             page_df = page_df.merge(metadata, on=['filename', 'discipline'], how='left')
             
@@ -58,7 +65,7 @@ def load_data():
             st.error("\n".join(error_messages))
             return pd.DataFrame(), pd.DataFrame()
     except KeyError as e:
-        st.error(f"Path key not found in session state: {e}. Ensure paths are initialized in app.py.")
+        st.error(f"KeyError occurred: {e}")
         return pd.DataFrame(), pd.DataFrame()
     except Exception as e:
         st.error(f"Error loading data: {str(e)}")

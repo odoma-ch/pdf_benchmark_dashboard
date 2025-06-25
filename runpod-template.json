@@ -1,0 +1,41 @@
+{
+  "name": "PDF Dashboard",
+  "description": "Streamlit dashboard for PDF analysis and visualization",
+  "dockerImageName": "your-dockerhub-username/pdf-dashboard:latest",
+  "dockerArgs": "",
+  "containerPort": 8501,
+  "containerDiskInGb": 10,
+  "volumeInGb": 0,
+  "isPublic": true,
+  "isServerless": false,
+  "containerEnvironmentVariables": [
+    {
+      "key": "PDF_DIR",
+      "value": "/data/pdfs"
+    },
+    {
+      "key": "MARKDOWN_DIR", 
+      "value": "/data/extracted"
+    },
+    {
+      "key": "PAGE_SCORES_CSV",
+      "value": "/data/page_scores_full.csv"
+    },
+    {
+      "key": "METADATA_PKL",
+      "value": "/data/metadata_openalex(silver).pkl"
+    }
+  ],
+  "containerStartCommand": "",
+  "containerUser": "root",
+  "supportedGpuTypes": [],
+  "containerMemoryInGb": 4,
+  "containerCpuInCores": 2,
+  "containerDiskInGb": 10,
+  "volumeInGb": 0,
+  "volumeMountPath": "/data",
+  "startJupyterLab": false,
+  "startVscode": false,
+  "startSsh": false,
+  "runPodNodeTypes": ["cpu-optimized"]
+} 

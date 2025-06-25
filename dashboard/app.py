@@ -5,13 +5,13 @@ from pathlib import Path
 
 # --- Global Path Configuration ---
 # Get the absolute path of the current script
-PROJECT_ROOT = Path(__file__).resolve().parent
+# PROJECT_ROOT = Path(__file__).resolve().parent
 
 # Get paths from environment variables with fallbacks to defaults
-PDF_DIR_DEFAULT = os.getenv('PDF_DIR', str('/Users/alex/docs/code/Odoma/pdf_extract_benchmark/resources/gotriple_pdfs'))
-MARKDOWN_DIR_DEFAULT = os.getenv('MARKDOWN_DIR', str('/Users/alex/docs/code/Odoma/pdf_extract_benchmark/resources/extracted'))
-PAGE_SCORES_CSV_DEFAULT = os.getenv('PAGE_SCORES_CSV', str(PROJECT_ROOT / "data" / "page_scores_full.csv"))
-METADATA_PKL_DEFAULT = os.getenv('METADATA_PKL', str(PROJECT_ROOT / "data" / "metadata_openalex(silver).pkl"))
+PDF_DIR_DEFAULT = os.getenv('PDF_DIR', '/Users/alex/docs/code/Odoma/pdf_extract_benchmark/resources/gotriple_pdfs')
+MARKDOWN_DIR_DEFAULT = os.getenv('MARKDOWN_DIR', '/Users/alex/docs/code/Odoma/pdf_extract_benchmark/resources/extracted')
+PAGE_SCORES_CSV_DEFAULT = os.getenv('PAGE_SCORES_CSV', 'data/page_scores_full.csv')
+METADATA_PKL_DEFAULT = os.getenv('METADATA_PKL', 'data/metadata_openalex(silver).pkl')
 
 # Initialize session state for paths if not already set
 # if 'overall_scores_csv' not in st.session_state:
@@ -25,6 +25,19 @@ if 'pdf_dir' not in st.session_state: # Renamed from pdf_path to pdf_dir for cla
 if 'markdown_dir' not in st.session_state:
     st.session_state.markdown_dir = MARKDOWN_DIR_DEFAULT
 
+# Initialize other session state variables
+if 'selected_file' not in st.session_state:
+    st.session_state.selected_file = None
+if 'selected_row_data' not in st.session_state:
+    st.session_state.selected_row_data = None
+if 'selected_pdf_file' not in st.session_state:
+    st.session_state.selected_pdf_file = None
+if 'selected_markdown_file' not in st.session_state:
+    st.session_state.selected_markdown_file = None
+if 'page_num' not in st.session_state:
+    st.session_state.page_num = 1
+if 'selected_page' not in st.session_state:
+    st.session_state.selected_page = None
 
 # Set page config
 st.set_page_config(
@@ -121,13 +134,6 @@ Each extracted text is evaluated using an LLM judge across five key criteria, ea
 
 Use the sidebar navigation to explore different sections of the dashboard. Click on any row in the results table to view the original PDF and its extracted content.
 """)
-
-# Initialize session state
-if 'selected_file' not in st.session_state:
-    st.session_state.selected_file = None
-if 'selected_row_data' not in st.session_state: 
-    st.session_state.selected_row_data = None
-
 
 # --- Path Configuration UI ---
 st.markdown("### 📁 Path Configuration")
