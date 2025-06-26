@@ -5,13 +5,13 @@ from pathlib import Path
 
 # --- Global Path Configuration ---
 # Get the absolute path of the current script
-# PROJECT_ROOT = Path(__file__).resolve().parent
+PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
 # Get paths from environment variables with fallbacks to defaults
-PDF_DIR_DEFAULT = os.getenv('PDF_DIR', '/Users/alex/docs/code/Odoma/pdf_extract_benchmark/resources/gotriple_pdfs')
-MARKDOWN_DIR_DEFAULT = os.getenv('MARKDOWN_DIR', '/Users/alex/docs/code/Odoma/pdf_extract_benchmark/resources/extracted')
-PAGE_SCORES_CSV_DEFAULT = os.getenv('PAGE_SCORES_CSV', 'data/page_scores_full.csv')
-METADATA_PKL_DEFAULT = os.getenv('METADATA_PKL', 'data/metadata_openalex(silver).pkl')
+PDF_DIR_DEFAULT = os.getenv('PDF_DIR', None)
+MARKDOWN_DIR_DEFAULT = os.getenv('MARKDOWN_DIR', None)
+PAGE_SCORES_CSV_DEFAULT = os.getenv('PAGE_SCORES_CSV', PROJECT_ROOT / 'data' / 'page_scores_full.csv')
+METADATA_PKL_DEFAULT = os.getenv('METADATA_PKL', PROJECT_ROOT / 'data' / 'metadata_openalex(silver).pkl')
 
 # Initialize session state for paths if not already set
 # if 'overall_scores_csv' not in st.session_state:
