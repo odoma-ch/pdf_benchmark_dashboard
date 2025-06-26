@@ -183,7 +183,7 @@ with col1:
             else:
                 st.error("Failed to display PDF")
         else:
-            st.warning(f"PDF file not found for: {filename}")
+            st.warning(f"PDF file not found for: {filename}, current path: {pdf_path}")
     else:
         st.info("Please select a PDF file above or from the Results Overview page")
 
@@ -251,7 +251,7 @@ with col2:
             md_path = Path(f"resources/extracted/{selected_tool}/{row_data['Discipline']}/{filename}_{selected_tool}.md")
             st.info(f"📁 Current file: {md_path}")
             
-            
+            print(f"md path: {md_path}")
             
             # Display markdown content in a scrollable container
             st.markdown("**Markdown Content:**")
