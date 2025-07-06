@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pdf-dashboard
+  labels:
+    app: pdf-dashboard
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pdf-dashboard
+  template:
+    metadata:
+      labels:
+        app: pdf-dashboard
+    spec:
+      containers:
+      - name: pdf-dashboard
+        image: yourusername/pdf-dashboard:latest  # Replace with your registry
+        ports:
+        - containerPort: 8501
+        env:
+        - name: PDF_DIR
+          value: "/workspace/data/pdfs"
+        - name: MARKDOWN_DIR
+          value: "/workspace/data/extracted"
+        - name: PAGE_SCORES_CSV
+          value: "/workspace/data/page_scores_full.csv"
+        - name: METADATA_PKL
+          value: "/workspace/data/metadata_openalex(silver).pkl"
+        resources:
+          requests:
+            memory: "2Gi"
+            cpu: "500m"
+          limits:
+            memory: "5Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /_stcore/health
+            port: 8501
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        volumeMounts:
+        - name: data-volume
+          mountPath: /workspace/data
+      volumes:
+      - name: data-volume
+        persistentVolumeClaim:
+          claimName: pdf-dashboard-pvc
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pdf-dashboard-service
+  labels:
+    app: pdf-dashboard
+spec:
+  selector:
+    app: pdf-dashboard
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8501
+  type: ClusterIP
+
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pdf-dashboard-pvc
+spec:
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi 

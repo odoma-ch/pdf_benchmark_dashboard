@@ -89,7 +89,7 @@ def find_pdf_file(filename, discipline):
 
 # Check if a file is selected
 if not st.session_state.selected_file or not st.session_state.selected_row_data:
-    st.info("👆 You can select documents from the 'Results Overview' page or use the file selectors below to choose your own files!")
+    st.info("👆 You can select documents from the 'Results Overview' page, and select a tool to view the PDF and Markdown.")
 
 # Display selected file information if available
 if st.session_state.selected_file and st.session_state.selected_row_data:
@@ -142,33 +142,7 @@ col1, col2 = st.columns([1, 1])
 with col1:
     st.subheader("📄 PDF Preview")
     
-    # PDF file selector
-    uploaded_pdf = st.file_uploader(
-        "Select PDF file:",
-        type=['pdf'],
-        key="pdf_file_upload"
-    )
-    
-    if uploaded_pdf is not None:
-        st.session_state.selected_pdf_file = uploaded_pdf
-        st.success(f"📁 Selected: {uploaded_pdf.name}")
-        
-        # Display PDF directly from uploaded file
-        try:
-            pdf_content = uploaded_pdf.getvalue()
-            base64_pdf = base64.b64encode(pdf_content).decode('utf-8')
-            
-            # Embed PDF in HTML
-            pdf_display = f'''
-            <iframe src="data:application/pdf;base64,{base64_pdf}" 
-                    width="100%" height="600" type="application/pdf">
-            </iframe>
-            '''
-            st.markdown(pdf_display, unsafe_allow_html=True)
-        except Exception as e:
-            st.error(f"Error displaying PDF: {str(e)}")
-    
-    elif st.session_state.selected_file and st.session_state.selected_row_data:
+    if st.session_state.selected_file and st.session_state.selected_row_data:
         # Fallback to resources directory
         
         filename = st.session_state.selected_file
@@ -190,54 +164,7 @@ with col1:
 with col2:
     st.subheader("📝 Extracted Markdown")
     
-    # Markdown file selector
-    uploaded_markdown = st.file_uploader(
-        "Select Markdown file:",
-        type=['md', 'txt'],
-        key="markdown_file_upload"
-    )
-    
-    if uploaded_markdown is not None:
-        st.session_state.selected_markdown_file = uploaded_markdown
-        st.success(f"📁 Selected: {uploaded_markdown.name}")
-        
-        # Display markdown content from uploaded file
-        try:
-            markdown_content = uploaded_markdown.getvalue().decode('utf-8')
-            # Display markdown content in a scrollable container  
-            st.markdown(
-                f"""
-                <div style="height: 500px; overflow-y: scroll; border: 1px solid #ddd; padding: 10px; background-color: #f9f9f9;">
-                    <pre style="white-space: pre-wrap; font-size: 12px;">{markdown_content}</pre>
-                </div>
-                """,
-                unsafe_allow_html=True
-            )
-
-            # Show markdown statistics
-            lines = markdown_content.split('\n')
-            words = len(markdown_content.split())
-            chars = len(markdown_content)
-            
-            col_a, col_b, col_c = st.columns(3)
-            with col_a:
-                st.metric("Lines", len(lines))
-            with col_b:
-                st.metric("Words", words)
-            with col_c:
-                st.metric("Characters", chars)
-            
-            # Download button for markdown
-            st.download_button(
-                label="📥 Download Markdown",
-                data=markdown_content,
-                file_name=uploaded_markdown.name,
-                mime="text/markdown"
-            )
-        except Exception as e:
-            st.error(f"Error displaying markdown: {str(e)}")
-    
-    elif st.session_state.selected_file and st.session_state.selected_row_data:
+    if st.session_state.selected_file and st.session_state.selected_row_data:
         # Fallback to extracted markdown from resources
         filename = st.session_state.selected_file
         row_data = st.session_state.selected_row_data
