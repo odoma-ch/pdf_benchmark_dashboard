@@ -1,0 +1,26 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Log in to Docker Registry
+      uses: docker/login-action@v3
+      with:
+        registry: registry.paas.psnc.pl
+        username: ${{ secrets.psnc_registry.PSNC_EMAIL }}
+        password: ${{ secrets.psnc_registry.PSNC_CLI_SECRET }}
+    - name: Build the Docker image
+      run: docker build --platform linux/amd64 . -t registry.paas.psnc.pl/graphia/pdf_benchmark_dashboard:latest
+    - name: Push the Docker image
+      run: docker push registry.paas.psnc.pl/graphia/pdf_benchmark_dashboard:latest
